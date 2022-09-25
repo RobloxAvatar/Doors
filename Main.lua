@@ -1,3 +1,7 @@
+--[[
+	[Updated]
+]]
+
 local ui_options = {
 	main_color = Color3.fromRGB(13, 105, 172),
 	min_size = Vector2.new(400, 300),
@@ -2192,12 +2196,53 @@ do
 			end
 		end)
 
+		local esp_settings = {
+			textsize = 8,
+			colour = 255,255,0
+		}
+
+		local gui1 = Instance.new("BillboardGui")
+		local esp1 = Instance.new("TextLabel", gui1)
+
+		gui1.Name = "Cracked esp"
+		gui1.ResetOnSpawn = false
+		gui1.AlwaysOnTop = true;
+		gui1.LightInfluence = 0;
+		gui1.Size = UDim2.new(1.75, 0, 1.75, 0);
+		esp1.BackgroundColor3 = Color3.fromRGB(255, 255, 0);
+		esp1.Text = "Key"
+		esp1.Size = UDim2.new(0.0001, 0.00001, 0.0001, 0.00001);
+		esp1.BorderSizePixel = 4;
+		esp1.BorderColor3 = Color3.new(esp_settings.colour)
+		esp1.BorderSizePixel = 0
+		esp1.Font = "GothamSemibold"
+		esp1.TextSize = esp_settings.textsize
+		esp1.TextColor3 = Color3.fromRGB(esp_settings.colour)
+
+		workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+			if inst.Name == "KeyObtain" and getgenv().esp == true then
+				gui1:Clone().Parent = inst
+			end
+		end)
+
+		spawn(function()
+			while task.wait() do
+				for i,v in ipairs(workspace:GetDescendants()) do
+					if not v:FindFirstChild("Cracked esp") and v.Name == "KeyObtain" and getgenv().esp == true then
+						gui1:Clone().Parent = v
+					end
+				end
+			end
+		end)
+
 		local LatestRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
 
 		game:GetService("ReplicatedStorage").GameData.LatestRoom.Changed:Connect(function()
 			LatestRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom.Value
 			if LatestRoom == 50 and getgenv().esp == true then
 				coroutine.resume(BookCoroutine)
+				coroutine.resume(EntityCoroutine)
+			elseif LatestRoom == 100 and getgenv().esp == true then
 				coroutine.resume(EntityCoroutine)
 			end
 		end)
@@ -2270,12 +2315,16 @@ do
                 engine.MakeNotification("Rush Spawned, Hide!", 3)
             elseif inst.Name == "AmbushMoving" and getgenv().mobspawnnotify == true and getgenv().avoid == false then
                 engine.MakeNotification("Ambush Spawned Hide!, He Can Come Up 3-4 times!", 3)
-            elseif inst.Name == "Screech" and getgenv().mobspawnnotify == true then
-                engine.MakeNotification("Screech Spawned Turn Around And Look At It!", 3)
             elseif inst.Name == "Lookman" and getgenv().mobspawnnotify == true then
                 engine.MakeNotification("Eyes Spawned, dont look at it!", 3)
             end
         end)
+
+		workspace.CurrentCamera.ChildAdded:Connect(function(inst)
+			if inst.Name == "Screech" and getgenv().mobspawnnotify == true then
+				engine.MakeNotification("Screech Spawned Turn Around And Look At It!", 3)
+			end
+		end)
     
         local LatestRoom = game:GetService("ReplicatedStorage").GameData.LatestRoom
         local ChaseStart = game:GetService("ReplicatedStorage").GameData.ChaseStart
